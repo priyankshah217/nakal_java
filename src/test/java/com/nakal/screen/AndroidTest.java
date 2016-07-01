@@ -1,7 +1,6 @@
 package com.nakal.screen;
 
 import com.nakal.ScreenExecutor.NakalExecutor;
-import com.nakal.devices.AndroidDeviceScreen;
 import com.nakal.imageutil.ImageUtil;
 import org.im4java.core.IM4JavaException;
 import org.junit.Assert;
@@ -14,22 +13,16 @@ import java.io.IOException;
  */
 public class AndroidTest {
 
-    AndroidDeviceScreen devices = new AndroidDeviceScreen();
     ImageUtil imageUtil = new ImageUtil();
     NakalExecutor nakalExecutor = new NakalExecutor();
 
-    @Test
-    public void testDeviceConnected() {
-        Assert.assertEquals(devices.checkIfDevicesAreConnected(), true);
-    }
 
 
     @Test
     public void verifyImagesAreSimilar() throws InterruptedException, IOException, IM4JavaException {
-   /*     boolean imagePixels = imageUtil.compareImages(System.getProperty("user.dir") + "/testImages/ActivityScreen.png",
+        boolean imagePixels = imageUtil.compareImages(System.getProperty("user.dir") + "/testImages/ActivityScreen.png",
                 System.getProperty("user.dir") + "/testImages/ActivityScreen.png");
-        Assert.assertTrue(imagePixels);*/
-           Assert.assertTrue(nakalExecutor.nakalExecutorCompareScreenAndCreateDiffImage("ActivityScreen"));
+        Assert.assertTrue(imagePixels);
 
     }
 
@@ -52,15 +45,19 @@ public class AndroidTest {
 
     @Test
     public void verifyThresholdDifference() throws InterruptedException, IOException, IM4JavaException {
-        imageUtil.compareImagesWithPixelDifferenceInPercentage(System.getProperty("user.dir") + "/testImages/googleActual.png",
-                System.getProperty("user.dir") + "/testImages/googleExpected.png", 20);
+        imageUtil.compareImages(System.getProperty("user.dir") + "/testImages/googleActual.png",
+                System.getProperty("user.dir") + "/testImages/googleExpected.png", System.getProperty("user.dir") + "/testImages/percentageDiff.png",20);
+    }
+
+
+    @Test
+    public void compareImagesExecutor(){
+        Assert.assertTrue(nakalExecutor.nakalExecutorNativeCompare("ActivityScreen"));
     }
 
     @Test
-    public void maskImageVerification() throws InterruptedException, IOException, IM4JavaException {
-        imageUtil.maskImage("/Users/saikrisv/Desktop/ActivityScreenReference.png",
-                "/Users/saikrisv/Desktop/ActivityScreenMaskImage.png",
-                "/Users/saikrisv/Desktop/masked.png");
+    public void compareImagesWithPixelDifference(){
+        Assert.assertTrue(nakalExecutor.nakalExecutorNativeCompare("ActivityScreen",3));
     }
 
 }

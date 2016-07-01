@@ -86,21 +86,26 @@ public class ImageUtil {
      * @param value       set the ignore % of image pixels
      * @throws IOException
      */
-    public boolean compareImagesWithPixelDifferenceInPercentage(String expectedImage, String actualImage, int value)
+    public boolean compareImages(String expectedImage, String actualImage,String diffImage, int value)
             throws IOException, IM4JavaException, InterruptedException {
-        compareImages(actualImage, expectedImage);
+        compareImages(actualImage, expectedImage,diffImage);
         long totalImagePixel = getCompleteImagePixel(actualImage);
-        long totalPixelDifferne = Integer.parseInt(arrayListErrorConsumer.getOutput().get(0));
-        double c = ((double) totalPixelDifferne / totalImagePixel) * 100;
-        long finalPercentageDifference = Math.round(c);
-        System.out.println(finalPercentageDifference);
-        try {
-            if (finalPercentageDifference <= value) {
-                return true;
+        if(arrayListErrorConsumer.getOutput().get(0).contains("+") == true){
+            return false;
+        }else{
+            long totalPixelDifferne = Integer.parseInt(arrayListErrorConsumer.getOutput().get(0));
+
+            double c = ((double) totalPixelDifferne / totalImagePixel) * 100;
+            long finalPercentageDifference = Math.round(c);
+            System.out.println("Difference in the images is ::" + finalPercentageDifference +"%");
+            try {
+                if (finalPercentageDifference <= value) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
             }
-        } catch (NumberFormatException e) {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -132,15 +137,15 @@ public class ImageUtil {
      */
     public void mergeImagesHorizontally(String expected, String actual, String diffImage, String mergedImage)
             throws InterruptedException, IOException, IM4JavaException {
-        ConvertCmd cmd = new ConvertCmd();
-        IMOperation op = new IMOperation();
-        op.addImage(expected); // source file
-        op.addImage(actual); // destination file file
-        op.addImage(diffImage);
-        op.appendHorizontally();
-        op.resize(800, 600);
-        op.addImage(mergedImage);
-        cmd.run(op);
+        ConvertCmd cmd1 = new ConvertCmd();
+        IMOperation op1 = new IMOperation();
+        op1.addImage(expected); // source file
+        op1.addImage(actual); // destination file file
+        op1.addImage(diffImage);
+        op1.resize(1024,576);
+        op1.p_append();
+        op1.addImage(mergedImage);
+        cmd1.run(op1);
     }
 
 
